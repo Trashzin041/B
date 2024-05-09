@@ -1,0 +1,178 @@
+local GetService = setmetatable({}, {
+    __index = function(self, key)
+        return game:GetService(key)
+    end
+})
+-- Define LocalPlayer and Camera
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local Network = GetService.NetworkClient
+local lighting = GetService.Lighting
+
+-- Load necessary scripts
+local lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/Trashzin041/Notification/main/lib'))()
+local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/linemaster2/esp-library/main/library.lua"))();
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/EXFTB/SplixRemakeUi/c8a0549442e867f210ded3e462060324d221db21/Library.lua"))()
+local window = library:new({textsize = 13.5,
+font = Enum.Font.RobotoMono,
+name = 'trashzin.vip',
+color = Color3.fromRGB(166, 80, 207)})
+
+
+local aiming = window:page({name = "aiming"})
+local Visuals = window:page({name = "visuals"})
+local config = window:page({name = "config"})
+
+local WorldCheats = Visuals:section({name = "world visuals",side = "right", size = 200})
+local playervisual = Visuals:section({name = "player visuals",side = "left", size = 200})
+local Playeradjust = Visuals:section({name = "player visuals adjust",side = "left", size = 200})
+local originalClockTime = game.Lighting.ClockTime
+local sliderEnabled = false
+
+playervisual:toggle({name = "Enable", def = false, callback = function(state)
+    ESP.Enabled = state
+end})
+
+playervisual:toggle({name = "Boxes", def = false, callback = function(state)
+    ESP.ShowBox = state
+end})
+
+playervisual:toggle({name = "healthBar", def = false, callback = function(state)
+    ESP.ShowHealth = state
+end})
+
+playervisual:toggle({name = "Names", def = false, callback = function(state)
+    ESP.ShowName = state
+end})
+
+playervisual:toggle({name = "Distance", def = false, callback = function(state)
+    ESP.ShowDistance = state
+end})
+
+playervisual:toggle({name = "TeamCheck", def = false, callback = function(state)
+    ESP.Teamcheck = state
+end})
+
+playervisual:toggle({name = "WallCheck", def = false, callback = function(state)
+    ESP.WallCheck = state
+end})
+
+
+Playeradjust:colorpicker({name = "Box Color", cpname = "", def = Color3.new(166, 80, 207), callback = function(color)
+    ESP.BoxColor = color
+end})
+
+Playeradjust:colorpicker({name = "Names Color", cpname = "", def = Color3.new(166, 80, 207), callback = function(color)
+    ESP.NameColor = color
+end})
+
+Playeradjust:colorpicker({name = "Weapon Color ", cpname = "", def = Color3.new(166, 80, 207), callback = function(color)
+    Sense.teamSettings.enemy.weaponColor [1] = color
+end})
+
+-- Função para colorpicker com toggle para Ambient Color
+local originalAmbientColor = game.Lighting.Ambient
+local ambientColorEnabled = false
+
+WorldCheats:toggle({
+    name = "Enable Ambient Color",
+    def = false,
+    callback = function(state)
+        ambientColorEnabled = state
+        if not state then
+            game.Lighting.Ambient = originalAmbientColor
+        end
+    end
+})
+
+WorldCheats:colorpicker({
+    name = "Ambient Color",
+    cpname = "",
+    def = Color3.new(0.603921, 0.011764, 1),
+    callback = function(color)
+        if ambientColorEnabled then
+            game.Lighting.Ambient = color
+        end
+    end
+})
+
+-- Função para colorpicker com toggle para ColorShiftTop Color
+local originalColorShiftTop = game.Lighting.ColorShift_Top
+local colorShiftTopEnabled = false
+
+WorldCheats:toggle({
+    name = "Enable ColorShiftTop Color",
+    def = false,
+    callback = function(state)
+        colorShiftTopEnabled = state
+        if not state then
+            game.Lighting.ColorShift_Top = originalColorShiftTop
+        end
+    end
+})
+
+WorldCheats:colorpicker({
+    name = "ColorShiftTop Color",
+    cpname = "",
+    def = Color3.new(0.603921, 0.011764, 1),
+    callback = function(color)
+        if colorShiftTopEnabled then
+            game.Lighting.ColorShift_Top = color
+        end
+    end
+})
+
+-- Função para colorpicker com toggle para OutdoorAmbient Color
+local originalOutdoorAmbient = game.Lighting.OutdoorAmbient
+local outdoorAmbientEnabled = false
+
+WorldCheats:toggle({
+    name = "Enable OutdoorAmbient Color",
+    def = false,
+    callback = function(state)
+        outdoorAmbientEnabled = state
+        if not state then
+            game.Lighting.OutdoorAmbient = originalOutdoorAmbient
+        end
+    end
+})
+
+WorldCheats:colorpicker({
+    name = "OutdoorAmbient Color",
+    cpname = "",
+    def = Color3.new(0.603921, 0.011764, 1),
+    callback = function(color)
+        if outdoorAmbientEnabled then
+            game.Lighting.OutdoorAmbient = color
+        end
+    end
+})
+
+WorldCheats:toggle({
+    name = "Enable Slider",
+    def = false,
+    callback = function(state)
+        sliderEnabled = state
+        if not state then
+            game.Lighting.ClockTime = originalClockTime
+        end
+    end
+})
+
+WorldCheats:slider({
+    name = "ClockTime",
+    def = 10,
+    max = 16,
+    min = 1,
+    rounding = true,
+    callback = function(Value)
+        if sliderEnabled then
+            game.Lighting.ClockTime = Value
+        end
+    end
+})
+
+-- Notify user about script loading
+local startTime = tick()
+lib:notify1(string.format("<font color='#%s'>trashzin.vip> </font>%s", lib.accent:ToHex(), 'enjoy trashzin.vip'), 5)
+lib:notify1(string.format("<font color='#%s'>trashzin.vip> </font>script loaded in %.2f seconds", lib.accent:ToHex(), tick() - startTime), 4)
